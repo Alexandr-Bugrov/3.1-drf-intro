@@ -1,6 +1,7 @@
 from measurement.models import Sensor
 from measurement.serializers import SensorSerializer, SensorsSerializer, MeasurementSerializer
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, CreateAPIView, RetrieveUpdateAPIView
+from django.shortcuts import get_object_or_404
 
 
 class SensorsView(ListCreateAPIView):
@@ -24,3 +25,7 @@ class SensorUpdate(RetrieveUpdateAPIView):
 
 class MeasurementCreate(CreateAPIView):
     serializer_class = MeasurementSerializer
+    def perform_create(self, serializer):
+        sensor = get_object_or_404(Sensor, id=self.request.data.get('sensor'))
+        return serializer.save(sensor=sensor)
+
